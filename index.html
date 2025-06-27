@@ -31,14 +31,40 @@
             align-items: center;
         }
 
-        .level-display {
+        .level-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .level-btn {
+            background: rgba(255, 255, 255, 0.8);
+            color: #2d3436;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            touch-action: manipulation;
+        }
+
+        .level-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .level-btn.active {
             background: rgba(106, 90, 205, 0.9);
             color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 1.8em;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #fff;
+            transform: scale(1.05);
+        }
+
+        .level-btn:active {
+            transform: scale(0.95);
         }
 
         .score-display {
@@ -51,24 +77,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .progress-bar {
-            width: 100%;
-            max-width: 400px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00b894, #00cec9);
-            border-radius: 50px;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
         .question-area {
             display: flex;
             align-items: center;
@@ -76,22 +84,22 @@
             gap: 20px;
             flex: 1;
             flex-wrap: wrap;
-            margin-bottom: 40px; /* 문제와 답 사이 여백 추가 */
+            margin-bottom: 40px;
         }
 
         .number-card {
-            width: 20vw; /* 15vw에서 20vw로 증가 */
-            height: 20vw; /* 15vw에서 20vw로 증가 */
-            min-width: 100px; /* 80px에서 100px로 증가 */
-            min-height: 100px; /* 80px에서 100px로 증가 */
-            max-width: 150px; /* 120px에서 150px로 증가 */
-            max-height: 150px; /* 120px에서 150px로 증가 */
+            width: 20vw;
+            height: 20vw;
+            min-width: 100px;
+            min-height: 100px;
+            max-width: 150px;
+            max-height: 150px;
             background: white;
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10vw; /* 8vw에서 10vw로 증가 */
+            font-size: 10vw;
             font-weight: bold;
             color: #2d3436;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -99,7 +107,7 @@
         }
 
         .operator {
-            font-size: 12vw; /* 10vw에서 12vw로 증가 */
+            font-size: 12vw;
             color: #2d3436;
             font-weight: bold;
             min-font-size: 2em;
@@ -126,7 +134,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8vw; /* 6vw에서 8vw로 증가 */
+            font-size: 8vw;
             font-weight: bold;
             color: #2d3436;
             cursor: pointer;
@@ -134,7 +142,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border: 3px solid transparent;
             touch-action: manipulation;
-            min-height: 60px; /* 최소 높이 추가 */
+            min-height: 60px;
         }
 
         .answer-card:active {
@@ -174,23 +182,6 @@
             z-index: 999;
         }
 
-        .level-up {
-            position: fixed;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(106, 90, 205, 0.95);
-            color: white;
-            padding: 20px 40px;
-            border-radius: 20px;
-            font-size: 2em;
-            font-weight: bold;
-            animation: levelUpAnimation 2s;
-            pointer-events: none;
-            z-index: 1000;
-            text-align: center;
-        }
-
         @keyframes bounce {
             0%, 20%, 60%, 100% { transform: scale(1.1) translateY(0); }
             40% { transform: scale(1.1) translateY(-20px); }
@@ -209,38 +200,31 @@
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
 
-        @keyframes levelUpAnimation {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-        }
-
         /* 세로 화면 (일반적인 핸드폰) */
         @media (orientation: portrait) {
             .number-card {
-                font-size: 12vw; /* 8vw에서 12vw로 증가 */
-                max-font-size: 5em; /* 4em에서 5em으로 증가 */
+                font-size: 12vw;
+                max-font-size: 5em;
             }
             
             .operator {
-                font-size: 14vw; /* 10vw에서 14vw로 증가 */
-                max-font-size: 6em; /* 5em에서 6em으로 증가 */
+                font-size: 14vw;
+                max-font-size: 6em;
             }
             
             .answer-card {
-                font-size: 10vw; /* 6vw에서 10vw로 증가 */
-                max-font-size: 3.5em; /* 2.5em에서 3.5em으로 증가 */
-                min-height: 70px; /* 60px에서 70px로 증가 */
+                font-size: 10vw;
+                max-font-size: 3.5em;
+                min-height: 70px;
             }
             
             .answer-options {
-                gap: 4vw; /* 3vw에서 4vw로 증가 */
-                margin-bottom: 6vh; /* 5vh에서 6vh로 증가 */
+                gap: 4vw;
+                margin-bottom: 6vh;
             }
             
             .question-area {
-                margin-bottom: 50px; /* 모바일에서 더 큰 여백 */
+                margin-bottom: 50px;
             }
         }
 
@@ -252,28 +236,38 @@
             
             .question-area {
                 gap: 15px;
+                margin-bottom: 30px;
             }
             
             .number-card {
-                width: 12vh;
-                height: 12vh;
-                font-size: 6vh;
+                width: 18vh;
+                height: 18vh;
+                font-size: 10vh;
+                min-width: 120px;
+                min-height: 120px;
             }
             
             .operator {
-                font-size: 8vh;
+                font-size: 12vh;
+                min-font-size: 3em;
             }
             
             .answer-card {
-                font-size: 4vh;
+                font-size: 7vh;
+                min-height: 80px;
             }
             
             .answer-options {
-                gap: 10px;
-                margin-bottom: 10px;
+                gap: 15px;
+                margin-bottom: 15px;
             }
             
-            .level-display, .score-display {
+            .level-btn {
+                font-size: 1.0em;
+                padding: 8px 15px;
+            }
+            
+            .score-display {
                 font-size: 1.3em;
                 padding: 8px 20px;
             }
@@ -289,8 +283,8 @@
                 gap: 8px;
             }
             
-            .level-display, .score-display {
-                font-size: 1.3em;
+            .level-btn, .score-display {
+                font-size: 1.1em;
                 padding: 8px 15px;
             }
         }
@@ -298,29 +292,29 @@
         /* 큰 화면에서는 최대 크기 제한 */
         @media (min-width: 768px) {
             .number-card {
-                width: 120px;
-                height: 120px;
-                font-size: 4em;
-            }
-            
-            .operator {
+                width: 150px;
+                height: 150px;
                 font-size: 5em;
             }
             
+            .operator {
+                font-size: 6em;
+            }
+            
             .answer-card {
-                font-size: 2.5em;
+                font-size: 3em;
             }
         }
     </style>
 </head>
 <body>
     <div class="top-info">
-        <div class="level-display">1단계</div>
+        <div class="level-selector">
+            <div class="level-btn active" data-level="1">1단계</div>
+            <div class="level-btn" data-level="2">2단계</div>
+            <div class="level-btn" data-level="3">3단계</div>
+        </div>
         <div class="score-display">🌟 <span id="score">0</span></div>
-    </div>
-    
-    <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
     </div>
     
     <div class="question-area">
@@ -340,16 +334,14 @@
     <script>
         let score = 0;
         let currentLevel = 1;
-        let questionsInLevel = 0;
-        let questionsNeededForNextLevel = 10; // 단계별로 10문제씩
         let currentNum1, currentNum2, correctAnswer;
-        let wrongAttempts = 0; // 틀린 횟수 추적
-        let maxAttempts = 2; // 최대 2번까지 틀릴 수 있음
+        let wrongAttempts = 0;
+        let maxAttempts = 2;
         
         // 배경음악 설정
         let backgroundMusic = new Audio('bgm.mp3');
         backgroundMusic.loop = true;
-        backgroundMusic.volume = 0.3; // 볼륨 30%
+        backgroundMusic.volume = 0.3;
         
         // 효과음 생성 (Web Audio API 사용)
         let audioContext = null;
@@ -369,9 +361,9 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
-            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
-            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
             
             gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
@@ -389,7 +381,6 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
-            // '비빙' 소리 효과
             oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
             oscillator.frequency.setValueAtTime(400, audioContext.currentTime + 0.1);
             
@@ -400,28 +391,6 @@
             oscillator.stop(audioContext.currentTime + 0.2);
         }
         
-        function playLevelUpSound() {
-            if (!audioContext) initAudio();
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
-            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
-            oscillator.frequency.setValueAtTime(1046.50, audioContext.currentTime + 0.3); // C6
-            
-            gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
-        }
-        
-        // 배경음악 시작 함수
         function startBackgroundMusic() {
             initAudio();
             backgroundMusic.play().catch(error => {
@@ -429,64 +398,60 @@
             });
         }
         
-        // 페이지 클릭시 배경음악 시작 (브라우저 정책 때문에)
         document.addEventListener('click', function() {
             startBackgroundMusic();
         }, { once: true });
 
-        const levelConfigs = {
-            1: {
-                name: "1단계",
-                description: "합이 10 이하",
-                color: "#6a5acd"
-            },
-            2: {
-                name: "2단계", 
-                description: "합이 10 이상",
-                color: "#ff6b6b"
-            },
-            3: {
-                name: "3단계",
-                description: "큰 수 더하기",
-                color: "#ffa726"
-            }
-        };
+        // 레벨 선택 기능
+        function setupLevelSelector() {
+            const levelBtns = document.querySelectorAll('.level-btn');
+            
+            levelBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const selectedLevel = parseInt(btn.dataset.level);
+                    
+                    if (selectedLevel !== currentLevel) {
+                        currentLevel = selectedLevel;
+                        
+                        levelBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        
+                        generateQuestion();
+                        playCorrectSound();
+                    }
+                });
+            });
+        }
 
         function generateQuestionByLevel(level) {
             let num1, num2;
             
             switch(level) {
                 case 1:
-                    // 1단계: 두 숫자를 더하여 합이 10 이하
                     do {
-                        num1 = Math.floor(Math.random() * 9) + 1; // 1~9
-                        num2 = Math.floor(Math.random() * 9) + 1; // 1~9
+                        num1 = Math.floor(Math.random() * 9) + 1;
+                        num2 = Math.floor(Math.random() * 9) + 1;
                     } while (num1 + num2 > 10);
                     break;
                     
                 case 2:
-                    // 2단계: 두 숫자를 더하면 합이 10 이상 (둘 다 10 미만)
                     do {
-                        num1 = Math.floor(Math.random() * 9) + 1; // 1~9
-                        num2 = Math.floor(Math.random() * 9) + 1; // 1~9
+                        num1 = Math.floor(Math.random() * 9) + 1;
+                        num2 = Math.floor(Math.random() * 9) + 1;
                     } while (num1 + num2 < 10);
                     break;
                     
                 case 3:
-                    // 3단계: 두 숫자 중 하나가 10 이상 19 이하, 합은 20 이하
                     if (Math.random() < 0.5) {
-                        // 첫 번째 숫자가 큰 수
-                        num1 = Math.floor(Math.random() * 10) + 10; // 10~19
-                        num2 = Math.floor(Math.random() * (21 - num1)) + 1; // 1~(20-num1)
+                        num1 = Math.floor(Math.random() * 10) + 10;
+                        num2 = Math.floor(Math.random() * (21 - num1)) + 1;
                     } else {
-                        // 두 번째 숫자가 큰 수
-                        num2 = Math.floor(Math.random() * 10) + 10; // 10~19
-                        num1 = Math.floor(Math.random() * (21 - num2)) + 1; // 1~(20-num2)
+                        num2 = Math.floor(Math.random() * 10) + 10;
+                        num1 = Math.floor(Math.random() * (21 - num2)) + 1;
                     }
                     break;
                     
                 default:
-                    // 기본값 (1단계)
                     num1 = Math.floor(Math.random() * 5) + 1;
                     num2 = Math.floor(Math.random() * 5) + 1;
             }
@@ -499,13 +464,11 @@
             currentNum1 = num1;
             currentNum2 = num2;
             correctAnswer = currentNum1 + currentNum2;
-            wrongAttempts = 0; // 새 문제에서 틀린 횟수 초기화
+            wrongAttempts = 0;
             
-            // 화면에 문제 표시
             document.getElementById('num1').textContent = currentNum1;
             document.getElementById('num2').textContent = currentNum2;
             
-            // 답 선택지 생성
             generateOptions();
         }
 
@@ -513,21 +476,17 @@
             const optionsContainer = document.getElementById('options');
             optionsContainer.innerHTML = '';
             
-            // 선택지 배열 만들기 (정답 포함)
             let options = [correctAnswer];
             
-            // 4개의 오답 추가
             while (options.length < 5) {
-                let wrongAnswer = correctAnswer + Math.floor(Math.random() * 11) - 5; // ±5 범위
+                let wrongAnswer = correctAnswer + Math.floor(Math.random() * 11) - 5;
                 if (wrongAnswer > 0 && wrongAnswer <= 30 && !options.includes(wrongAnswer)) {
                     options.push(wrongAnswer);
                 }
             }
             
-            // 배열 섞기
             options.sort(() => Math.random() - 0.5);
             
-            // 선택지 카드들 생성
             options.forEach(option => {
                 const card = document.createElement('div');
                 card.className = 'answer-card';
@@ -541,75 +500,48 @@
             const allCards = document.querySelectorAll('.answer-card');
             
             if (selectedAnswer === correctAnswer) {
-                // 정답!
                 cardElement.classList.add('correct-answer');
                 score += 10;
-                questionsInLevel++;
                 
                 document.getElementById('score').textContent = score;
-                updateProgress();
                 
-                // 정답 효과음 재생
                 playCorrectSound();
-                
-                // 축하 이모티콘과 파티클 동시에 표시
                 showCelebrationWithParticles('🎉');
                 
-                // 모든 카드 클릭 비활성화
                 allCards.forEach(card => {
                     card.style.pointerEvents = 'none';
                 });
                 
-                // 레벨업 체크
-                if (questionsInLevel >= questionsNeededForNextLevel && currentLevel < 3) {
-                    setTimeout(() => {
-                        levelUp();
-                    }, 1000);
-                } else {
-                    // 1.5초 후 다음 문제
-                    setTimeout(() => {
-                        resetCards();
-                        generateQuestion();
-                    }, 1500);
-                }
+                setTimeout(() => {
+                    resetCards();
+                    generateQuestion();
+                }, 1500);
                 
             } else {
-                // 오답
                 wrongAttempts++;
                 
-                // 클릭한 카드만 빨간색으로 표시
                 cardElement.classList.add('wrong-answer');
-                cardElement.style.pointerEvents = 'none'; // 틀린 카드는 클릭 못하게
+                cardElement.style.pointerEvents = 'none';
                 
-                // 오답 효과음 재생 (삐빅!)
                 playWrongSound();
                 
-                // 2번 다 틀렸으면 정답 보여주고 사용자가 클릭할 때까지 대기
                 if (wrongAttempts >= maxAttempts) {
-                    // 모든 카드 클릭 비활성화
                     allCards.forEach(card => {
                         card.style.pointerEvents = 'none';
                     });
                     
-                    // 정답 카드 표시하고 클릭 가능하게 만들기
                     allCards.forEach(card => {
                         if (parseInt(card.textContent) === correctAnswer) {
                             card.classList.add('correct-answer');
-                            card.style.pointerEvents = 'auto'; // 정답 카드만 클릭 가능
-                            // 정답 카드에 클릭 이벤트 추가
+                            card.style.pointerEvents = 'auto';
                             card.onclick = () => {
-                                // 정답 효과음 재생
                                 playCorrectSound();
-                                
-                                // 축하 이모티콘과 파티클 동시에 표시
                                 showCelebrationWithParticles('😊');
                                 
-                                // 모든 카드 클릭 비활성화
                                 allCards.forEach(c => {
                                     c.style.pointerEvents = 'none';
                                 });
                                 
-                                // 1.5초 후 다음 문제
                                 setTimeout(() => {
                                     resetCards();
                                     generateQuestion();
@@ -618,54 +550,17 @@
                         }
                     });
                     
-                    // 피드백 메시지
                     const feedbackEl = document.getElementById('feedback');
                     feedbackEl.innerHTML = `정답은 ${correctAnswer}이었어요! 😊<br>정답을 클릭해보세요!`;
-                    feedbackEl.className = 'feedback';
                 } else {
-                    // 아직 기회가 남았으면 다시 시도할 수 있도록
                     const feedbackEl = document.getElementById('feedback');
                     feedbackEl.innerHTML = `한번 더 해봐요! 😊`;
-                    feedbackEl.className = 'feedback';
                     
-                    // 1초 후 피드백 메시지 지우기
                     setTimeout(() => {
                         feedbackEl.innerHTML = '';
                     }, 1000);
                 }
             }
-        }
-
-        function levelUp() {
-            currentLevel++;
-            questionsInLevel = 0;
-            
-            // 레벨업 효과음 재생
-            playLevelUpSound();
-            
-            // 레벨업 메시지 표시
-            const levelUpDiv = document.createElement('div');
-            levelUpDiv.className = 'level-up';
-            levelUpDiv.innerHTML = `🎊 ${levelConfigs[currentLevel].name} 🎊<br>${levelConfigs[currentLevel].description}`;
-            document.body.appendChild(levelUpDiv);
-            
-            // 레벨 표시 업데이트
-            const levelDisplay = document.querySelector('.level-display');
-            levelDisplay.textContent = levelConfigs[currentLevel].name;
-            levelDisplay.style.background = levelConfigs[currentLevel].color;
-            
-            setTimeout(() => {
-                document.body.removeChild(levelUpDiv);
-                resetCards();
-                generateQuestion();
-            }, 2000);
-            
-            updateProgress();
-        }
-
-        function updateProgress() {
-            const progress = (questionsInLevel / questionsNeededForNextLevel) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
         }
 
         function showCelebration(emoji) {
@@ -680,9 +575,7 @@
         }
 
         function showCelebrationWithParticles(emoji) {
-            // 파티클 먼저 시작!
             createParticles();
-            // 바로 이어서 이모티콘 표시
             showCelebration(emoji);
         }
 
@@ -690,7 +583,6 @@
             const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'];
             const particleCount = 20;
             
-            // 화면 중앙 위치
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
             
@@ -698,32 +590,24 @@
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 
-                // 랜덤 색상
                 particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                
-                // 중앙에서 시작
                 particle.style.left = centerX + 'px';
                 particle.style.top = centerY + 'px';
                 
-                // 크기 2.5배 증가: 20~45px
                 const size = Math.random() * 25 + 20;
                 particle.style.width = size + 'px';
                 particle.style.height = size + 'px';
                 
-                // 360도 전체로 균등하게 퍼지도록 각도 계산
                 const baseAngle = (2 * Math.PI * i) / particleCount;
                 const randomOffset = (Math.random() - 0.5) * 0.3;
                 const angle = baseAngle + randomOffset;
                 
-                // 범위 2.5배 증가: 250~625px
                 const velocity = Math.random() * 375 + 250;
                 const finalX = centerX + Math.cos(angle) * velocity;
                 const finalY = centerY + Math.sin(angle) * velocity;
                 
-                // 개별 애니메이션 이름 생성
                 const animationName = `explode${i}`;
                 
-                // 동적으로 CSS 애니메이션 생성
                 const styleSheet = document.styleSheets[0];
                 const keyframes = `
                     @keyframes ${animationName} {
@@ -744,12 +628,10 @@
                 
                 styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
                 
-                // 애니메이션 적용
                 particle.style.animation = `${animationName} ${(Math.random() * 1 + 2)}s ease-out forwards`;
                 
                 document.body.appendChild(particle);
                 
-                // 정리
                 setTimeout(() => {
                     if (document.body.contains(particle)) {
                         document.body.removeChild(particle);
@@ -765,7 +647,6 @@
                 card.style.pointerEvents = 'auto';
             });
             
-            // 피드백 메시지도 지우기
             const feedbackEl = document.getElementById('feedback');
             if (feedbackEl) {
                 feedbackEl.innerHTML = '';
@@ -773,8 +654,8 @@
         }
 
         // 게임 시작
+        setupLevelSelector();
         generateQuestion();
-        updateProgress();
     </script>
 </body>
 </html>
