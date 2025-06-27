@@ -163,6 +163,15 @@
             z-index: 1000;
         }
 
+        .particle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
         .level-up {
             position: fixed;
             top: 30%;
@@ -536,8 +545,8 @@
                 // 정답 효과음 재생
                 playCorrectSound();
                 
-                // 축하 이모티콘 표시
-                showCelebration('🎉');
+                // 축하 이모티콘과 파티클 동시에 표시
+                showCelebrationWithParticles('🎉');
                 
                 // 모든 카드 클릭 비활성화
                 allCards.forEach(card => {
@@ -585,8 +594,8 @@
                                 // 정답 효과음 재생
                                 playCorrectSound();
                                 
-                                // 축하 이모티콘 표시
-                                showCelebration('😊');
+                                // 축하 이모티콘과 파티클 동시에 표시
+                                showCelebrationWithParticles('😊');
                                 
                                 // 모든 카드 클릭 비활성화
                                 allCards.forEach(c => {
@@ -661,6 +670,85 @@
             setTimeout(() => {
                 document.body.removeChild(celebration);
             }, 1000);
+        }
+
+        function showCelebrationWithParticles(emoji) {
+            // 파티클 먼저 시작!
+            createParticles();
+            // 바로 이어서 이모티콘 표시
+            showCelebration(emoji);
+        }
+
+        function createParticles() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'];
+            const particleCount = 20;
+            
+            // 화면 중앙 위치
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 랜덤 색상
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // 중앙에서 시작
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                
+                // 크기 2.5배 증가: 20~45px
+                const size = Math.random() * 25 + 20;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // 360도 전체로 균등하게 퍼지도록 각도 계산
+                const baseAngle = (2 * Math.PI * i) / particleCount;
+                const randomOffset = (Math.random() - 0.5) * 0.3;
+                const angle = baseAngle + randomOffset;
+                
+                // 범위 2.5배 증가: 250~625px
+                const velocity = Math.random() * 375 + 250;
+                const finalX = centerX + Math.cos(angle) * velocity;
+                const finalY = centerY + Math.sin(angle) * velocity;
+                
+                // 개별 애니메이션 이름 생성
+                const animationName = `explode${i}`;
+                
+                // 동적으로 CSS 애니메이션 생성
+                const styleSheet = document.styleSheets[0];
+                const keyframes = `
+                    @keyframes ${animationName} {
+                        0% {
+                            transform: translate(-50%, -50%) scale(0.3);
+                            opacity: 1;
+                        }
+                        15% {
+                            transform: translate(-50%, -50%) scale(1.8);
+                            opacity: 1;
+                        }
+                        100% {
+                            transform: translate(${finalX - centerX}px, ${finalY - centerY}px) scale(0.5);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                
+                styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+                
+                // 애니메이션 적용
+                particle.style.animation = `${animationName} ${(Math.random() * 1 + 2)}s ease-out forwards`;
+                
+                document.body.appendChild(particle);
+                
+                // 정리
+                setTimeout(() => {
+                    if (document.body.contains(particle)) {
+                        document.body.removeChild(particle);
+                    }
+                }, 3500);
+            }
         }
 
         function resetCards() {
