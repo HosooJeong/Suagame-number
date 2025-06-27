@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>유아 더하기 게임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .top-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+
+        .level-display {
+            background: rgba(106, 90, 205, 0.9);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-display {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2d3436;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894, #00cec9);
+            border-radius: 50px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .question-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .number-card {
+            width: 15vw;
+            height: 15vw;
+            min-width: 80px;
+            min-height: 80px;
+            max-width: 120px;
+            max-height: 120px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8vw;
+            font-weight: bold;
+            color: #2d3436;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 4px solid #00b894;
+        }
+
+        .operator {
+            font-size: 10vw;
+            color: #2d3436;
+            font-weight: bold;
+            min-font-size: 2em;
+        }
+
+        .question-mark {
+            background: #ddd6fe;
+            color: #7c3aed;
+        }
+
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+
+        .answer-card {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6vw;
+            font-weight: bold;
+            color: #2d3436;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid transparent;
+            touch-action: manipulation;
+        }
+
+        .answer-card:active {
+            transform: scale(0.95);
+        }
+
+        .correct-answer {
+            background: #00b894 !important;
+            color: white !important;
+            animation: bounce 0.6s;
+            transform: scale(1.1);
+        }
+
+        .wrong-answer {
+            background: #ff6b6b !important;
+            color: white !important;
+            animation: shake 0.5s;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 15vw;
+            animation: celebrate 1s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .level-up {
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(106, 90, 205, 0.95);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 20px;
+            font-size: 2em;
+            font-weight: bold;
+            animation: levelUpAnimation 2s;
+            pointer-events: none;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: scale(1.1) translateY(0); }
+            40% { transform: scale(1.1) translateY(-20px); }
+            80% { transform: scale(1.1) translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        @keyframes celebrate {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        @keyframes levelUpAnimation {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+        }
+
+        /* 세로 화면 (일반적인 핸드폰) */
+        @media (orientation: portrait) {
+            .number-card {
+                font-size: 8vw;
+                max-font-size: 4em;
+            }
+            
+            .operator {
+                font-size: 10vw;
+                max-font-size: 5em;
+            }
+            
+            .answer-card {
+                font-size: 6vw;
+                max-font-size: 2.5em;
+            }
+            
+            .answer-options {
+                gap: 3vw;
+                margin-bottom: 5vh;
+            }
+        }
+
+        /* 가로 화면 */
+        @media (orientation: landscape) {
+            body {
+                padding: 10px;
+            }
+            
+            .question-area {
+                gap: 15px;
+            }
+            
+            .number-card {
+                width: 12vh;
+                height: 12vh;
+                font-size: 6vh;
+            }
+            
+            .operator {
+                font-size: 8vh;
+            }
+            
+            .answer-card {
+                font-size: 4vh;
+            }
+            
+            .answer-options {
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .level-display, .score-display {
+                font-size: 1.3em;
+                padding: 8px 20px;
+            }
+        }
+
+        /* 아주 작은 화면 */
+        @media (max-width: 360px) {
+            .question-area {
+                gap: 10px;
+            }
+            
+            .answer-options {
+                gap: 8px;
+            }
+            
+            .level-display, .score-display {
+                font-size: 1.3em;
+                padding: 8px 15px;
+            }
+        }
+
+        /* 큰 화면에서는 최대 크기 제한 */
+        @media (min-width: 768px) {
+            .number-card {
+                width: 120px;
+                height: 120px;
+                font-size: 4em;
+            }
+            
+            .operator {
+                font-size: 5em;
+            }
+            
+            .answer-card {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-info">
+        <div class="level-display">1단계</div>
+        <div class="score-display">🌟 <span id="score">0</span></div>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+    
+    <div class="question-area">
+        <div class="number-card" id="num1">5</div>
+        <div class="operator">+</div>
+        <div class="number-card" id="num2">3</div>
+        <div class="operator">=</div>
+        <div class="number-card question-mark">?</div>
+    </div>
+
+    <div class="answer-options" id="options">
+        <!-- 답 선택지들이 여기에 동적으로 생성됩니다 -->
+    </div>
+    
+    <div id="feedback" style="text-align: center; font-size: 1.5em; color: #2d3436; margin-top: 10px;"></div>
+
+    <script>
+        let score = 0;
+        let currentLevel = 1;
+        let questionsInLevel = 0;
+        let questionsNeededForNextLevel = 10; // 단계별로 10문제씩
+        let currentNum1, currentNum2, correctAnswer;
+        let wrongAttempts = 0; // 틀린 횟수 추적
+        let maxAttempts = 2; // 최대 2번까지 틀릴 수 있음
+        
+        // 배경음악 설정
+        let backgroundMusic = new Audio('bgm.mp3');
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.3; // 볼륨 30%
+        
+        // 효과음 생성 (Web Audio API 사용)
+        let audioContext = null;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playCorrectSound() {
+            if (!audioContext) initAudio();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+        
+        function playWrongSound() {
+            if (!audioContext) initAudio();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // '비빙' 소리 효과
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+        
+        function playLevelUpSound() {
+            if (!audioContext) initAudio();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+            oscillator.frequency.setValueAtTime(1046.50, audioContext.currentTime + 0.3); // C6
+            
+            gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+        
+        // 배경음악 시작 함수
+        function startBackgroundMusic() {
+            initAudio();
+            backgroundMusic.play().catch(error => {
+                console.log('배경음악 재생 실패:', error);
+            });
+        }
+        
+        // 페이지 클릭시 배경음악 시작 (브라우저 정책 때문에)
+        document.addEventListener('click', function() {
+            startBackgroundMusic();
+        }, { once: true });
+
+        const levelConfigs = {
+            1: {
+                name: "1단계",
+                description: "합이 10 이하",
+                color: "#6a5acd"
+            },
+            2: {
+                name: "2단계", 
+                description: "합이 10 이상",
+                color: "#ff6b6b"
+            },
+            3: {
+                name: "3단계",
+                description: "큰 수 더하기",
+                color: "#ffa726"
+            }
+        };
+
+        function generateQuestionByLevel(level) {
+            let num1, num2;
+            
+            switch(level) {
+                case 1:
+                    // 1단계: 두 숫자를 더하여 합이 10 이하
+                    do {
+                        num1 = Math.floor(Math.random() * 9) + 1; // 1~9
+                        num2 = Math.floor(Math.random() * 9) + 1; // 1~9
+                    } while (num1 + num2 > 10);
+                    break;
+                    
+                case 2:
+                    // 2단계: 두 숫자를 더하면 합이 10 이상 (둘 다 10 미만)
+                    do {
+                        num1 = Math.floor(Math.random() * 9) + 1; // 1~9
+                        num2 = Math.floor(Math.random() * 9) + 1; // 1~9
+                    } while (num1 + num2 < 10);
+                    break;
+                    
+                case 3:
+                    // 3단계: 두 숫자 중 하나가 10 이상 19 이하, 합은 20 이하
+                    if (Math.random() < 0.5) {
+                        // 첫 번째 숫자가 큰 수
+                        num1 = Math.floor(Math.random() * 10) + 10; // 10~19
+                        num2 = Math.floor(Math.random() * (21 - num1)) + 1; // 1~(20-num1)
+                    } else {
+                        // 두 번째 숫자가 큰 수
+                        num2 = Math.floor(Math.random() * 10) + 10; // 10~19
+                        num1 = Math.floor(Math.random() * (21 - num2)) + 1; // 1~(20-num2)
+                    }
+                    break;
+                    
+                default:
+                    // 기본값 (1단계)
+                    num1 = Math.floor(Math.random() * 5) + 1;
+                    num2 = Math.floor(Math.random() * 5) + 1;
+            }
+            
+            return {num1, num2};
+        }
+
+        function generateQuestion() {
+            const {num1, num2} = generateQuestionByLevel(currentLevel);
+            currentNum1 = num1;
+            currentNum2 = num2;
+            correctAnswer = currentNum1 + currentNum2;
+            wrongAttempts = 0; // 새 문제에서 틀린 횟수 초기화
+            
+            // 화면에 문제 표시
+            document.getElementById('num1').textContent = currentNum1;
+            document.getElementById('num2').textContent = currentNum2;
+            
+            // 답 선택지 생성
+            generateOptions();
+        }
+
+        function generateOptions() {
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            // 선택지 배열 만들기 (정답 포함)
+            let options = [correctAnswer];
+            
+            // 4개의 오답 추가
+            while (options.length < 5) {
+                let wrongAnswer = correctAnswer + Math.floor(Math.random() * 11) - 5; // ±5 범위
+                if (wrongAnswer > 0 && wrongAnswer <= 30 && !options.includes(wrongAnswer)) {
+                    options.push(wrongAnswer);
+                }
+            }
+            
+            // 배열 섞기
+            options.sort(() => Math.random() - 0.5);
+            
+            // 선택지 카드들 생성
+            options.forEach(option => {
+                const card = document.createElement('div');
+                card.className = 'answer-card';
+                card.textContent = option;
+                card.onclick = () => checkAnswer(option, card);
+                optionsContainer.appendChild(card);
+            });
+        }
+
+        function checkAnswer(selectedAnswer, cardElement) {
+            const allCards = document.querySelectorAll('.answer-card');
+            
+            if (selectedAnswer === correctAnswer) {
+                // 정답!
+                cardElement.classList.add('correct-answer');
+                score += 10;
+                questionsInLevel++;
+                
+                document.getElementById('score').textContent = score;
+                updateProgress();
+                
+                // 정답 효과음 재생
+                playCorrectSound();
+                
+                // 축하 이모티콘 표시
+                showCelebration('🎉');
+                
+                // 모든 카드 클릭 비활성화
+                allCards.forEach(card => {
+                    card.style.pointerEvents = 'none';
+                });
+                
+                // 레벨업 체크
+                if (questionsInLevel >= questionsNeededForNextLevel && currentLevel < 3) {
+                    setTimeout(() => {
+                        levelUp();
+                    }, 1000);
+                } else {
+                    // 1.5초 후 다음 문제
+                    setTimeout(() => {
+                        resetCards();
+                        generateQuestion();
+                    }, 1500);
+                }
+                
+            } else {
+                // 오답
+                wrongAttempts++;
+                
+                // 클릭한 카드만 빨간색으로 표시
+                cardElement.classList.add('wrong-answer');
+                cardElement.style.pointerEvents = 'none'; // 틀린 카드는 클릭 못하게
+                
+                // 오답 효과음 재생 (삐빅!)
+                playWrongSound();
+                
+                // 2번 다 틀렸으면 정답 보여주고 사용자가 클릭할 때까지 대기
+                if (wrongAttempts >= maxAttempts) {
+                    // 모든 카드 클릭 비활성화
+                    allCards.forEach(card => {
+                        card.style.pointerEvents = 'none';
+                    });
+                    
+                    // 정답 카드 표시하고 클릭 가능하게 만들기
+                    allCards.forEach(card => {
+                        if (parseInt(card.textContent) === correctAnswer) {
+                            card.classList.add('correct-answer');
+                            card.style.pointerEvents = 'auto'; // 정답 카드만 클릭 가능
+                            // 정답 카드에 클릭 이벤트 추가
+                            card.onclick = () => {
+                                // 정답 효과음 재생
+                                playCorrectSound();
+                                
+                                // 축하 이모티콘 표시
+                                showCelebration('😊');
+                                
+                                // 모든 카드 클릭 비활성화
+                                allCards.forEach(c => {
+                                    c.style.pointerEvents = 'none';
+                                });
+                                
+                                // 1.5초 후 다음 문제
+                                setTimeout(() => {
+                                    resetCards();
+                                    generateQuestion();
+                                }, 1500);
+                            };
+                        }
+                    });
+                    
+                    // 피드백 메시지
+                    const feedbackEl = document.getElementById('feedback');
+                    feedbackEl.innerHTML = `정답은 ${correctAnswer}이었어요! 😊<br>정답을 클릭해보세요!`;
+                    feedbackEl.className = 'feedback';
+                } else {
+                    // 아직 기회가 남았으면 다시 시도할 수 있도록
+                    const feedbackEl = document.getElementById('feedback');
+                    feedbackEl.innerHTML = `한번 더 해봐요! 😊`;
+                    feedbackEl.className = 'feedback';
+                    
+                    // 1초 후 피드백 메시지 지우기
+                    setTimeout(() => {
+                        feedbackEl.innerHTML = '';
+                    }, 1000);
+                }
+            }
+        }
+
+        function levelUp() {
+            currentLevel++;
+            questionsInLevel = 0;
+            
+            // 레벨업 효과음 재생
+            playLevelUpSound();
+            
+            // 레벨업 메시지 표시
+            const levelUpDiv = document.createElement('div');
+            levelUpDiv.className = 'level-up';
+            levelUpDiv.innerHTML = `🎊 ${levelConfigs[currentLevel].name} 🎊<br>${levelConfigs[currentLevel].description}`;
+            document.body.appendChild(levelUpDiv);
+            
+            // 레벨 표시 업데이트
+            const levelDisplay = document.querySelector('.level-display');
+            levelDisplay.textContent = levelConfigs[currentLevel].name;
+            levelDisplay.style.background = levelConfigs[currentLevel].color;
+            
+            setTimeout(() => {
+                document.body.removeChild(levelUpDiv);
+                resetCards();
+                generateQuestion();
+            }, 2000);
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = (questionsInLevel / questionsNeededForNextLevel) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showCelebration(emoji) {
+            const celebration = document.createElement('div');
+            celebration.className = 'celebration';
+            celebration.textContent = emoji;
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => {
+                document.body.removeChild(celebration);
+            }, 1000);
+        }
+
+        function resetCards() {
+            const allCards = document.querySelectorAll('.answer-card');
+            allCards.forEach(card => {
+                card.classList.remove('correct-answer', 'wrong-answer');
+                card.style.pointerEvents = 'auto';
+            });
+            
+            // 피드백 메시지도 지우기
+            const feedbackEl = document.getElementById('feedback');
+            if (feedbackEl) {
+                feedbackEl.innerHTML = '';
+            }
+        }
+
+        // 게임 시작
+        generateQuestion();
+        updateProgress();
+    </script>
+</body>
+</html>
